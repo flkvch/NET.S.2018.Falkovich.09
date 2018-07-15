@@ -5,7 +5,7 @@ namespace Bank
     /// <summary>
     /// Privelege of BankAccount
     /// </summary>
-    public enum Privilege
+    internal enum Privilege
     {
         Base = 2,
         Silver = 4,
@@ -35,10 +35,10 @@ namespace Bank
             this.telephone = telephone;
         }
 
-        public void Print()
+        internal string GetInfo()
         {
-            Console.WriteLine($"Client: \n{firstName} \n{ lastName} \n{ dateOfBirth} \n{ adress}" +
-            $"\n{ passportData}\n{ telephone}");
+            return $"Client: \nFirst name:{firstName} \nLast name: { lastName} \nDate of birth: { dateOfBirth} \nAdress: { adress}" +
+            $"\nPassport data: { passportData}\nTelephone: { telephone}";
         }
     }
 
@@ -52,14 +52,47 @@ namespace Bank
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="priority">The priority.</param>
-        public BankAccount(Client client, int priority)
+        public BankAccount(Client client, string priority)
         {
             ++NumberOfAccount;
             this.Client = client;
             Balance = 0;
-            Privilege = (Privilege)priority;
+            int numPriority = 2;
+            switch (priority)
+            {
+                case "Base":
+                    {
+                        numPriority = 2;
+                        break;
+                    }
+
+                case "Silver":
+                    {
+                        numPriority = 4;
+                        break;
+                    }
+
+                case "Gold":
+                    {
+                        numPriority = 6;
+                        break;
+                    }
+
+                case "Platinum":
+                    {
+                        numPriority = 8;
+                        break;
+                    }
+
+                default:
+                    {
+                        numPriority = 2;
+                        break;
+                    }
+            }
+
+            Privilege = (Privilege)numPriority;
             IsActive = true;
-            //Console.WriteLine($"Account #{NumberOfAccount} is created");
         }
 
         /// <summary>
@@ -68,7 +101,7 @@ namespace Bank
         /// <value>
         /// The balance.
         /// </value>
-        public int Balance { get; private set; }
+        public decimal Balance { get; private set; }
 
         public int NumberOfAccount { get; private set; } = 0;
 
@@ -159,30 +192,28 @@ namespace Bank
             IsActive = true;
         }
 
-        public void GetStatus()
+        public string GetInfo()
         {
-            Console.WriteLine($"The number of account: {NumberOfAccount }");
+            string info = $"The number of account: {NumberOfAccount }";
             if (IsActive)
             {
-                Console.WriteLine("Is active");
+                info += "\nIs active";
             }
             else
             {
-                Console.WriteLine("is not active");
+                info += "\nIs not active";
             }
 
-            Console.WriteLine($"Balance: {Balance}");
-            Console.WriteLine($"Privelege: {Privilege}");
-            Console.WriteLine($"Bonus points: { BonusPoints}");
-            Client.Print();
+            info += $"\nBalance: {Balance}" + $"\nPrivelege: {Privilege}" + $"\nBonus points: { BonusPoints}" + $"\n{Client.GetInfo()}";
+            return info;
         }
 
-        private int CostBalance() => (int)Math.Log(Balance + 1, (int)Privilege);
+        private int CostBalance() => (int)Privilege * (int)Math.Log((double)Balance + 1, 2);
 
-        private int CostRefill(int sum) => (int)Math.Log(sum + 1, (int)Privilege);
+        private int CostRefill(int sum) => (int)Privilege * (int)Math.Log(sum + 1, 2);
 
-        private int CountRefillBonus(int sum) => CostRefill(sum) / (CostBalance() + 1);
+        private int CountRefillBonus(int sum) => 10 * (CostRefill(sum) - CostBalance());
 
-        private int CountWithdrawBonus(int sum) => 10 * CostRefill(sum) / (CostBalance() + 1);
+        private int CountWithdrawBonus(int sum) => (CostBalance()) - CostRefill(sum);
     }
 }
