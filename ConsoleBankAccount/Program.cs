@@ -81,7 +81,7 @@ namespace ConsoleBankAccount
                             string input2 = Console.ReadLine();
                             if (input2 == "-s")
                             {
-                                Console.WriteLine(a1.GetInfo());
+                                Console.WriteLine(a1.ToString());
                                 Console.ReadLine();
                             }
 

@@ -35,11 +35,12 @@ namespace Bank
             this.telephone = telephone;
         }
 
-        internal string GetInfo()
+        public override string ToString()
         {
             return $"Client: \nFirst name:{firstName} \nLast name: { lastName} \nDate of birth: { dateOfBirth} \nAdress: { adress}" +
             $"\nPassport data: { passportData}\nTelephone: { telephone}";
         }
+
     }
 
     /// <summary>
@@ -192,7 +193,13 @@ namespace Bank
             IsActive = true;
         }
 
-        public string GetInfo()
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
         {
             string info = $"The number of account: {NumberOfAccount }";
             if (IsActive)
@@ -204,8 +211,36 @@ namespace Bank
                 info += "\nIs not active";
             }
 
-            info += $"\nBalance: {Balance}" + $"\nPrivelege: {Privilege}" + $"\nBonus points: { BonusPoints}" + $"\n{Client.GetInfo()}";
+            info += $"\nBalance: {Balance}" + $"\nPrivelege: {Privilege}" + $"\nBonus points: { BonusPoints}" + $"\n{Client.ToString()}";
             return info;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (!(obj is BankAccount))
+            {
+                return false;
+            }
+
+            return NumberOfAccount == ((BankAccount)obj).NumberOfAccount;
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return NumberOfAccount.GetHashCode();
         }
 
         private int CostBalance() => (int)Privilege * (int)Math.Log((double)Balance + 1, 2);
@@ -214,6 +249,6 @@ namespace Bank
 
         private int CountRefillBonus(int sum) => 10 * (CostRefill(sum) - CostBalance());
 
-        private int CountWithdrawBonus(int sum) => (CostBalance()) - CostRefill(sum);
+        private int CountWithdrawBonus(int sum) => CostBalance() - CostRefill(sum);
     }
 }
