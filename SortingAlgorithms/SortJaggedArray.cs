@@ -8,28 +8,24 @@ namespace SortingAlgorithms
     /// </summary>
     public static class SortJaggedArray
     {
+        /// <summary>
+        /// Compares two arrays of integers
+        /// </summary>
         public interface IComparer
         {
             int Compare(int[] lhs, int[] rhs);
         }
 
         /// <summary>
-        /// BubbleSort for jagged arrays.
+        /// Bubbles the sort.
         /// </summary>
         /// <param name="array">The array.</param>
-        /// <param name="ascendingOrder">if set to <c>true</c> [ascending order].</param>
-        /// <param name="sortingBy">The method of sorting.</param>
+        /// <param name="comparer">The comparer.</param>
+        /// <exception cref="ArgumentNullException">Jagged array shouldn't be null. - array</exception>
+        /// <exception cref="ArgumentException">Jagged array shouldn't be empty. - array</exception>
         /// <returns>
         /// Sorted array.
         /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// Jagged array shouldn't be null. - array
-        /// or
-        /// Elements of jagged array shouldn't be null. - array
-        /// or
-        /// Elements of jagged array shouldn't be empty. - array
-        /// </exception>
-        /// <exception cref="ArgumentException">There is no such sorting of jagged array - sortingBy</exception>
         public static int[][] BubbleSort(this int[][] array, IComparer comparer)
         {
             array.BubbleSorting(comparer);
@@ -37,19 +33,12 @@ namespace SortingAlgorithms
         }
 
         /// <summary>
-        /// BubbleSort for jagged arrays
+        /// BubbleSort for jagged arrays.
         /// </summary>
         /// <param name="array">The array.</param>
-        /// <param name="ascendingOrder">if set to <c>true</c> [ascending order].</param>
-        /// <param name="sortingBy">The method of sorting.</param>
-        /// <exception cref="ArgumentNullException">
-        /// Jagged array shouldn't be null. - array
-        /// or
-        /// Elements of jagged array shouldn't be null. - array
-        /// or
-        /// Elements of jagged array shouldn't be empty. - array
-        /// </exception>
-        /// <exception cref="ArgumentException">There is no such sorting of jagged array - sortingBy</exception>
+        /// <param name="comparer">The comparer.</param>
+        /// <exception cref="ArgumentNullException">Jagged array shouldn't be null. - array</exception>
+        /// <exception cref="ArgumentException">Jagged array shouldn't be empty. - array</exception>
         private static void BubbleSorting(this int[][] array, IComparer comparer)
         {
             if (array == null) 
@@ -85,23 +74,14 @@ namespace SortingAlgorithms
             }
         }
 
-        private static void Reverse(int[][] jaggedArray)
-        {
-            for (int i = 0; i < jaggedArray.Length / 2; i++)
-            {
-                Swap(ref jaggedArray[i], ref jaggedArray[jaggedArray.Length - 1 - i]);
-            }
-        }
-
         /// <summary>
-        /// Swaps two referenses of the arays in jagged array
+        /// Swaps two <typeparamref name="T"/> in the array
         /// </summary>
-        /// <param name="el1">
-        /// The first reference
-        /// </param>
-        /// <param name="el2">
-        /// The second reference 
-        /// </param>
+        /// <typeparam name="T">
+        /// The type.
+        /// </typeparam>
+        /// <param name="el1">The first reference</param>
+        /// <param name="el2">The second reference</param>
         private static void Swap<T>(ref T el1, ref T el2)
         {
             T temp = el1;

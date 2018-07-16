@@ -20,14 +20,9 @@ namespace SortingAlgorithms.Tests
                 return 0;
             }
 
-            if (lhs.Length == 0 && rhs.Length == 0)
+            if (lhs == null)
             {
-                return 0;
-            }
-
-            if (lhs == null || lhs.Length == 0)
-            {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return -1;
                 }
@@ -35,9 +30,9 @@ namespace SortingAlgorithms.Tests
                 return 1;
             }
 
-            if (rhs == null || rhs.Length == 0)
+            if (rhs == null)
             {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return 1;
                 }
@@ -45,12 +40,27 @@ namespace SortingAlgorithms.Tests
                 return -1;
             }
 
-            if (isAscending == true)
+            int result = 0;
+            try
             {
-                return lhs.Max() - rhs.Max();
+                checked
+                {
+                    result = lhs.Max() - rhs.Max();
+                }
+
+            }
+            catch (OverflowException)
+            {
+                throw new ArgumentException("Can't compare maxs of arrays. ");
             }
 
-            return rhs.Max() - lhs.Max();
+            if (isAscending)
+            {
+                return result;
+
+            }
+
+            return -result;
         }
     }
 
@@ -70,14 +80,9 @@ namespace SortingAlgorithms.Tests
                 return 0;
             }
 
-            if (lhs.Length == 0 && rhs.Length == 0)
+            if (lhs == null)
             {
-                return 0;
-            }
-
-            if (lhs == null || lhs.Length == 0)
-            {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return -1;
                 }
@@ -85,9 +90,9 @@ namespace SortingAlgorithms.Tests
                 return 1;
             }
 
-            if (rhs == null || rhs.Length == 0)
+            if (rhs == null)
             {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return 1;
                 }
@@ -95,12 +100,27 @@ namespace SortingAlgorithms.Tests
                 return -1;
             }
 
-            if (isAscending == true)
+            int result = 0;
+            try
             {
-                return lhs.Min() - rhs.Min();
+                checked
+                {
+                    result = lhs.Min() - rhs.Min();
+                }
+
+            }
+            catch (OverflowException)
+            {
+                throw new ArgumentException("Can't compare mins of arrays. ");
             }
 
-            return rhs.Min() - lhs.Min();
+            if (isAscending)
+            {
+                return result;
+
+            }
+
+            return -result;
         }
     }
 
@@ -122,7 +142,7 @@ namespace SortingAlgorithms.Tests
 
             if (lhs == null)
             {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return -1;
                 }
@@ -132,7 +152,7 @@ namespace SortingAlgorithms.Tests
 
             if (rhs == null)
             {
-                if (isAscending == true)
+                if (isAscending)
                 {
                     return 1;
                 }
@@ -140,12 +160,27 @@ namespace SortingAlgorithms.Tests
                 return -1;
             }
 
-            if (isAscending == true)
+            int result = 0;
+            try
             {
-                return lhs.Sum() - rhs.Sum();
+                checked
+                {
+                    result = lhs.Sum() - rhs.Sum();
+                }
+
+            }
+            catch (OverflowException)
+            {
+                throw new ArgumentException("Can't compare sums of arrays. ");
             }
 
-            return rhs.Sum() - lhs.Sum();
+            if (isAscending)
+            {
+                return result;
+
+            }
+
+            return -result;
         }
     }
 
@@ -163,6 +198,7 @@ namespace SortingAlgorithms.Tests
                     new int[]{ -5, 1, 892, 78, 9, 0 }, //975
                     new int[]{ 2, 21, 0, 89, -89, 78 }, //101
                     new int[]{ 5, 9, -8, 38, 24, -17 },//51
+                    null,
                     new int[]{ 61, 35, 94, 81, 33, 17, 20, 10 },//351
                     new int[]{ 22, 6, 48, -1, 8},//83
                     new int[]{ 0 }
@@ -177,12 +213,13 @@ namespace SortingAlgorithms.Tests
                 new int[]{ 2, 21, 0 },
                 new int[]{ 20, 10 }},
              new int[][]{
+                    null,
                     new int[]{ 0 },
                     new int[]{ 5, 9, -8, 38, 24, -17 },//51
                     new int[]{ 22, 6, 48, -1, 8},//83
                     new int[]{ 2, 21, 0, 89, -89, 78 }, //101
                     new int[]{ 61, 35, 94, 81, 33, 17, 20, 10 },//351
-                    new int[]{ -5, 1, 892, 78, 9, 0 } //975
+                    new int[]{ -5, 1, 892, 78, 9, 0 }, //975
              }
         };
 
@@ -199,9 +236,10 @@ namespace SortingAlgorithms.Tests
                     new int[]{ 2, 21, 0, 89, -89, 78 }, //101
                     new int[]{ 22, 6, 48, -1, 8},//83
                     new int[]{ 5, 9, -8, 38, 24, -17 },//51
-                    new int[]{ 0 }
+                    new int[]{ 0 },
+                    null
             }
-            };
+        };
 
         private readonly int[][][] resultMaxAsc =
         {
@@ -211,6 +249,7 @@ namespace SortingAlgorithms.Tests
                 new int[]{ 20, 10 },
                 new int[]{ 2, 21, 0 } },
               new int[][]{
+                    null,
                     new int[]{ 0 },
                     new int[]{ 5, 9, -8, 38, 24, -17 },
                     new int[]{ 22, 6, 48, -1, 8},
@@ -233,7 +272,8 @@ namespace SortingAlgorithms.Tests
                     new int[]{ 2, 21, 0, 89, -89, 78 },
                     new int[]{ 22, 6, 48, -1, 8},
                     new int[]{ 5, 9, -8, 38, 24, -17 },
-                    new int[]{ 0 }
+                    new int[]{ 0 },
+                    null
               }
             };
 
@@ -245,6 +285,7 @@ namespace SortingAlgorithms.Tests
                  new int[]{ 5 },
                  new int[]{ 20, 10 } },
               new int[][]{
+                    null,
                     new int[]{ 2, 21, 0, 89, -89, 78 },
                     new int[]{ 5, 9, -8, 38, 24, -17 },
                     new int[]{ -5, 1, 892, 78, 9, 0 },
@@ -268,6 +309,7 @@ namespace SortingAlgorithms.Tests
                   new int[]{ -5, 1, 892, 78, 9, 0 },
                   new int[]{ 5, 9, -8, 38, 24, -17 },
                   new int[]{ 2, 21, 0, 89, -89, 78 },
+                  null
               } 
             };
 
