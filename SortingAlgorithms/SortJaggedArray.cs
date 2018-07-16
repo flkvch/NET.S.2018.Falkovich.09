@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace SortingAlgorithms
 {
@@ -7,6 +8,11 @@ namespace SortingAlgorithms
     /// </summary>
     public static class SortJaggedArray
     {
+        public interface IComparer
+        {
+            int Compare(int[] lhs, int[] rhs);
+        }
+
         /// <summary>
         /// BubbleSort for jagged arrays.
         /// </summary>
@@ -24,9 +30,9 @@ namespace SortingAlgorithms
         /// Elements of jagged array shouldn't be empty. - array
         /// </exception>
         /// <exception cref="ArgumentException">There is no such sorting of jagged array - sortingBy</exception>
-        public static int[][] BubbleSort(this int[][] array, bool ascendingOrder, string sortingBy)
+        public static int[][] BubbleSort(this int[][] array, IComparer comparer)
         {
-            array.BubbleSort2(ascendingOrder, sortingBy);
+            array.BubbleSorting(comparer);
             return array;
         }
 
@@ -44,24 +50,16 @@ namespace SortingAlgorithms
         /// Elements of jagged array shouldn't be empty. - array
         /// </exception>
         /// <exception cref="ArgumentException">There is no such sorting of jagged array - sortingBy</exception>
-        public static void BubbleSort2(this int[][] array, bool ascendingOrder, string sortingBy)
+        private static void BubbleSorting(this int[][] array, IComparer comparer)
         {
             if (array == null) 
             {
                 throw new ArgumentNullException("Jagged array shouldn't be null.", nameof(array));
             }
 
-            for (int i = 0; i < array.Length; i++)
+            if (array.Length == 0)
             {
-                if (array[i] == null)
-                {
-                    throw new ArgumentNullException("Elements of jagged array shouldn't be null.", nameof(array));
-                }
-
-                if (array[i].Length == 0)
-                {
-                    throw new ArgumentNullException("Elements of jagged array shouldn't be empty.", nameof(array));
-                }
+                throw new ArgumentException("Jagged array shouldn't be empty.", nameof(array));
             }
 
             if (array.Length == 1)
@@ -69,100 +67,21 @@ namespace SortingAlgorithms
                 return;
             }
 
-            switch (sortingBy)
-            {
-                case "Sum":
-                    {
-                        SortBySum(array, ascendingOrder);
-                        break;
-                    }
-
-                case "Max Element":
-                    {
-                        SortByMaxEl(array, ascendingOrder);
-                        break;
-                    }
-
-                case "Min Element":
-                    {
-                        SortByMinEl(array, ascendingOrder);
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new ArgumentException("There is no such sorting of jagged array", nameof(sortingBy));
-                    }                   
-            }
-        }
-
-        private static void SortByMinEl(int[][] jaggedArray, bool ascendingOrder)
-        {
-            int[] minsArray = new int[jaggedArray.Length];
-            for (int i = 0; i < jaggedArray.Length; i++)
-            {
-                minsArray[i] = jaggedArray[i][0];
-                for (int j = 1; j < jaggedArray[i].Length; j++)
-                {
-                    if (jaggedArray[i][j] < minsArray[i])
-                    {
-                        minsArray[i] = jaggedArray[i][j];
-                    }
-                }
-            }
-
-            BubbleSort(minsArray, jaggedArray, ascendingOrder);
-        }
-
-        private static void SortByMaxEl(int[][] jaggedArray, bool ascendingOrder)
-        {
-            int[] maxsArray = new int[jaggedArray.Length];
-            for (int i = 0; i < jaggedArray.Length; i++)
-            {
-                maxsArray[i] = jaggedArray[i][0];
-                for (int j = 1; j < jaggedArray[i].Length; j++)
-                {
-                    if (jaggedArray[i][j] > maxsArray[i]) 
-                    {
-                        maxsArray[i] = jaggedArray[i][j];
-                    }
-                }
-            }
-
-            BubbleSort(maxsArray, jaggedArray, ascendingOrder);
-        }
-
-        private static void SortBySum(int[][] array, bool ascendingOrder)
-        {
-            int[] sumsArray = new int[array.Length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                for (int j = 0; j < array[i].Length; j++)
-                {
-                    sumsArray[i] += array[i][j];
-                }
-            }
-
-            BubbleSort(sumsArray, array, ascendingOrder);
-        }
-
-        private static void BubbleSort(int[] array, int[][] jaggedArray, bool ascendingOrder)
-        {
             for (int i = 0; i < array.Length - 1; i++)
             {
-                for (int j = 0; j < array.Length - i - 1; j++)
+                bool check = true;
+                while (check)
                 {
-                    if (array[j] > array[j + 1])
+                    check = false;
+                    for (int j = 0; j < array.Length - i - 1; j++)
                     {
-                        Swap(ref jaggedArray[j], ref jaggedArray[j + 1]);
-                        Swap(ref array[j], ref array[j + 1]);
+                        if (comparer.Compare(array[j], array[j + 1]) > 0)
+                        {
+                            Swap(ref array[j], ref array[j + 1]);
+                            check = true;
+                        }
                     }
                 }
-            }
-
-            if (!ascendingOrder) 
-            {
-                Reverse(jaggedArray);
             }
         }
 

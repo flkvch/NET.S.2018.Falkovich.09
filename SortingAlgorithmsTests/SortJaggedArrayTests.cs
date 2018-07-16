@@ -1,10 +1,156 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace SortingAlgorithms.Tests
 {
-    [TestFixture()]
-    public class SortJaggedArrayTests
+    public class ByMax : SortJaggedArray.IComparer
+    {
+        bool isAscending;
+
+        public ByMax(bool isAscending)
+        {
+            this.isAscending = isAscending;
+        }
+
+        public int Compare(int[] lhs, int[] rhs)
+        {
+            if (lhs == null && rhs == null)
+            {
+                return 0;
+            }
+
+            if (lhs.Length == 0 && rhs.Length == 0)
+            {
+                return 0;
+            }
+
+            if (lhs == null || lhs.Length == 0)
+            {
+                if (isAscending == true)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
+
+            if (rhs == null || rhs.Length == 0)
+            {
+                if (isAscending == true)
+                {
+                    return 1;
+                }
+
+                return -1;
+            }
+
+            if (isAscending == true)
+            {
+                return lhs.Max() - rhs.Max();
+            }
+
+            return rhs.Max() - lhs.Max();
+        }
+    }
+
+    public class ByMin : SortJaggedArray.IComparer
+    {
+        bool isAscending;
+
+        public ByMin(bool isAscending)
+        {
+            this.isAscending = isAscending;
+        }
+
+        public int Compare(int[] lhs, int[] rhs)
+        {
+            if (lhs == null && rhs == null)
+            {
+                return 0;
+            }
+
+            if (lhs.Length == 0 && rhs.Length == 0)
+            {
+                return 0;
+            }
+
+            if (lhs == null || lhs.Length == 0)
+            {
+                if (isAscending == true)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
+
+            if (rhs == null || rhs.Length == 0)
+            {
+                if (isAscending == true)
+                {
+                    return 1;
+                }
+
+                return -1;
+            }
+
+            if (isAscending == true)
+            {
+                return lhs.Min() - rhs.Min();
+            }
+
+            return rhs.Min() - lhs.Min();
+        }
+    }
+
+    public class BySum : SortJaggedArray.IComparer
+    {
+        bool isAscending;
+
+        public BySum(bool isAscending)
+        {
+            this.isAscending = isAscending;
+        }
+
+        public int Compare(int[] lhs, int[] rhs)
+        {
+            if (lhs == null && rhs == null)
+            {
+                return 0;
+            }
+
+            if (lhs == null)
+            {
+                if (isAscending == true)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
+
+            if (rhs == null)
+            {
+                if (isAscending == true)
+                {
+                    return 1;
+                }
+
+                return -1;
+            }
+
+            if (isAscending == true)
+            {
+                return lhs.Sum() - rhs.Sum();
+            }
+
+            return rhs.Sum() - lhs.Sum();
+        }
+    }
+
+    [TestFixture]
+    public class SortJaggedArrayTests 
     {
         private readonly int[][][] array =
             {
@@ -129,51 +275,47 @@ namespace SortingAlgorithms.Tests
         private int[][] emptyArray = { };
 
         [Test]
-        public void BubbleSortTest_SumAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(true, "Sum"), resultSumAsc[0]);
+        public void BubbleSortTest_SumAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new BySum(true)), resultSumAsc[0]);
 
         [Test]
-        public void BubbleSortTest_SumAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(true, "Sum"), resultSumAsc[1]);
+        public void BubbleSortTest_SumAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new BySum(true)), resultSumAsc[1]);
 
         [Test]
-        public void BubbleSortTest_SumDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(false, "Sum"), resultSumDesc[0]);
+        public void BubbleSortTest_SumDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new BySum(false)), resultSumDesc[0]);
 
         [Test]
-        public void BubbleSortTest_SumDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(false, "Sum"), resultSumDesc[1]);
+        public void BubbleSortTest_SumDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new BySum(false)), resultSumDesc[1]);
 
         [Test]
-        public void BubbleSortTest_MaxAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(true, "Max Element"), resultMaxAsc[0]);
+        public void BubbleSortTest_MaxAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new ByMax(true)), resultMaxAsc[0]);
 
         [Test]
-        public void BubbleSortTest_MaxAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(true, "Max Element"), resultMaxAsc[1]);
+        public void BubbleSortTest_MaxAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new ByMax(true)), resultMaxAsc[1]);
 
         [Test]
-        public void BubbleSortTest_MaxDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(false, "Max Element"), resultMaxDesc[0]);
+        public void BubbleSortTest_MaxDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new ByMax(false)), resultMaxDesc[0]);
 
         [Test]
-        public void BubbleSortTest_MaxDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(false, "Max Element"), resultMaxDesc[1]);
+        public void BubbleSortTest_MaxDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new ByMax(false)), resultMaxDesc[1]);
 
         [Test]
-        public void BubbleSortTest_MinAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(true, "Min Element"), resultMinAsc[0]);
+        public void BubbleSortTest_MinAsc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new ByMin(true)), resultMinAsc[0]);
 
         [Test]
-        public void BubbleSortTest_MinAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(true, "Min Element"), resultMinAsc[1]);
+        public void BubbleSortTest_MinAsc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new ByMin(true)), resultMinAsc[1]);
 
         [Test]
-        public void BubbleSortTest_MinDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(false, "Min Element"), resultMinDesc[0]);
+        public void BubbleSortTest_MinDesc1() => CollectionAssert.AreEqual(array[0].BubbleSort(new ByMin(false)), resultMinDesc[0]);
 
         [Test]
-        public void BubbleSortTest_MinDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(false, "Min Element"), resultMinDesc[1]);
-
-        [Test]
-        public void BubbleSortTest_InValidMetod()
-            => Assert.Throws<ArgumentException>(() => array[0].BubbleSort(true, "Mult"));
+        public void BubbleSortTest_MinDesc2() => CollectionAssert.AreEqual(array[1].BubbleSort(new ByMin(false)), resultMinDesc[1]);
 
         [Test]
         public void BubbleSortTest_nullarray()
-            => Assert.Throws<ArgumentNullException>(() => nullArray.BubbleSort(true, "Sum"));
+            => Assert.Throws<ArgumentNullException>(() => nullArray.BubbleSort(new ByMax(true)));
 
         [Test]
         public void BubbleSortTest_emptyarray()
-        => Assert.Throws<ArgumentException>(() => emptyArray.BubbleSort(true, "Mult"));
+        => Assert.Throws<ArgumentException>(() => emptyArray.BubbleSort(new ByMax(true)));
     }
 }
