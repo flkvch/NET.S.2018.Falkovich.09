@@ -1,32 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SortingAlgorithms
+namespace SortingAlgorithms2
 {
-    /// <summary>
-    /// Class for sorting jagged arrays
-    /// </summary>
-    public static class SortJaggedArray
+    public static class SortJaggedArray2
     {
-       /// <summary>
+        /// <summary>
         /// BubbleSort for jagged arrays.
         /// </summary>
         /// <param name="array">The array.</param>
-        /// <param name="Comparison">The comparison.</param>
-        public static void BubbleSort(this int[][] array, Func<int[], int[], int> comparison)
+        /// <param name="comparer">The comparer.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Jagged array shouldn't be null. - array
+        /// or
+        /// Can't sort the array without comparer criteria. - Comparison
+        /// </exception>
+        /// <exception cref="ArgumentException">Jagged array shouldn't be empty. - array</exception>
+        public static void BubbleSort(this int[][] array, IComparer<int[]> comparer)
         {
-            IComparer<int[]> icomparer = new ComparisonAdapter(comparison);
-            BubbleSort(array, icomparer);
+            BubbleSort(array, comparer.Compare);
         }
 
         /// <summary>
         /// BubbleSort for jagged arrays.
         /// </summary>
         /// <param name="array">The array.</param>
-        /// <param name="comparer">The comparer.</param>
-        /// <exception cref="ArgumentNullException">Jagged array shouldn't be null. - array</exception>
-        /// <exception cref="ArgumentException">Jagged array shouldn't be empty. - array</exception>
-        public static void BubbleSort(this int[][] array, IComparer<int[]> comparer)
+        /// <param name="Comparison">The comparison.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Jagged array shouldn't be null. - array
+        /// or
+        /// Can't sort the array without comparer criteria. - Comparison
+        /// </exception>
+        /// <exception cref="System.ArgumentException">Jagged array shouldn't be empty. - array</exception>
+        public static void BubbleSort(this int[][] array, Func<int[], int[], int> comparison)
         {
             if (array == null)
             {
@@ -38,9 +44,9 @@ namespace SortingAlgorithms
                 throw new ArgumentException("Jagged array shouldn't be empty.", nameof(array));
             }
 
-            if (comparer == null)
+            if (comparison == null)
             {
-                throw new ArgumentNullException("Can't sort the array without comparer criteria.", nameof(comparer));
+                throw new ArgumentNullException("Can't sort the array without comparer criteria.", nameof(comparison));
             }
 
             if (array.Length == 1)
@@ -56,7 +62,7 @@ namespace SortingAlgorithms
                     check = false;
                     for (int j = 0; j < array.Length - i - 1; j++)
                     {
-                        if (comparer.Compare(array[j], array[j + 1]) > 0)
+                        if (comparison(array[j], array[j + 1]) > 0)
                         {
                             Swap(ref array[j], ref array[j + 1]);
                             check = true;
@@ -79,21 +85,6 @@ namespace SortingAlgorithms
             T temp = el1;
             el1 = el2;
             el2 = temp;
-        }
-
-        private class ComparisonAdapter : IComparer<int[]>
-        {
-            private readonly Func<int[], int[], int> _comparison;
-
-            public ComparisonAdapter(Func<int[], int[], int> comparison)
-            {
-                _comparison = comparison;
-            }
-
-            public int Compare(int[] lhs, int[] rhs)
-            {
-                return _comparison(lhs, rhs);
-            }
         }
     }
 }
